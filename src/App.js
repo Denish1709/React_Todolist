@@ -1,5 +1,5 @@
-import { Todolist } from "./component/todolist";
-import { Todoform } from "./component/addtodoform";
+import { useState } from "react";
+import React from "react";
 
 const todos = [
   {
@@ -18,17 +18,74 @@ const todos = [
     isCompleted: false,
   },
 ];
-export function App() {
+
+export const App = (props) => {
+  const [input, setInput] = useState("");
+  const [input2, setInput2] = useState([]);
+
+  const add = () => {
+    setInput2([...input2, input]);
+    setInput("");
+  };
+
   return (
     <div className="App">
       <div className="card rounded shadow-sm">
         <div className="card-body">
           <h3 className="card-title mb-3">My Todo List</h3>
-          <Todolist todos={todos} />
-          <Todoform />
+          <div>
+            <ul className="list-group">
+              <div>
+                {input2.map((item, index) => (
+                  <li
+                    className="list-group-item d-flex justify-content-between align-items-center"
+                    key={index}
+                  >
+                    <div>
+                      <button className="btn btn-sm btn-light">
+                        <i className="bi bi-square"></i>
+                      </button>
+                      <span className="ms-2">{item.text}</span>
+                    </div>
+                    <button className="btn btn-sm btn-danger">
+                      <i className="bi bi-trash"></i>
+                    </button>
+                  </li>
+                ))}
+              </div>
+              <div>
+                <form
+                  className="d-flex justify-content-between align-items-center"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    const newInput = [...input2];
+                    newInput.push({
+                      id: newInput.length + 1,
+                      text: input,
+                    });
+                    setInput2(newInput);
+                    setInput("");
+                  }}
+                >
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Add new item..."
+                    value={input}
+                    onChange={(event) => {
+                      setInput(event.target.value);
+                    }}
+                  />
+                  <button className="btn btn-primary btn-sm rounded ms-2">
+                    Add
+                  </button>
+                </form>
+              </div>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};
 export default App;
