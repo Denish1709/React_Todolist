@@ -1,23 +1,23 @@
 import { useState } from "react";
 import React from "react";
 
-const todos = [
-  {
-    id: 1,
-    text: "Task 1",
-    isCompleted: true,
-  },
-  {
-    id: 2,
-    text: "Task 2",
-    isCompleted: false,
-  },
-  {
-    id: 3,
-    text: "Task 3",
-    isCompleted: false,
-  },
-];
+// const todos = [
+//   {
+//     id: 1,
+//     text: "Task 1",
+//     isCompleted: true,
+//   },
+//   {
+//     id: 2,
+//     text: "Task 2",
+//     isCompleted: false,
+//   },
+//   {
+//     id: 3,
+//     text: "Task 3",
+//     isCompleted: false,
+//   },
+// ];
 
 export const App = (props) => {
   const [input, setInput] = useState("");
@@ -42,12 +42,50 @@ export const App = (props) => {
                     key={index}
                   >
                     <div>
-                      <button className="btn btn-sm btn-light">
-                        <i className="bi bi-square"></i>
+                      <button
+                        onClick={() => {
+                          const newDone = input2.map((done) => {
+                            if (done.id === item.id) {
+                              const doneTodos = { ...done };
+                              if (done.isCompleted === true) {
+                                doneTodos.isCompleted = false;
+                              } else if (done.isCompleted === false) {
+                                doneTodos.isCompleted = true;
+                              }
+                              return doneTodos;
+                            } else {
+                              return done;
+                            }
+                          });
+                          setInput2(newDone);
+                        }}
+                        className={`btn btn-sm ${
+                          item.isCompleted ? "btn-success" : "btn-light"
+                        }`}
+                      >
+                        <i
+                          className={`bi ${
+                            item.isCompleted ? "bi-check-square" : "bi-square"
+                          }`}
+                        ></i>
                       </button>
-                      <span className="ms-2">{item.text}</span>
+                      {item.isCompleted ? (
+                        <span className="ms-2 text-decoration-line-through">
+                          {item.text}
+                        </span>
+                      ) : (
+                        <span className="ms-2">{item.text}</span>
+                      )}
                     </div>
-                    <button className="btn btn-sm btn-danger">
+                    <button
+                      className="btn btn-sm btn-danger"
+                      onClick={() => {
+                        const newInput = input2.filter(
+                          (num) => num.id !== item.id
+                        );
+                        setInput2(newInput);
+                      }}
+                    >
                       <i className="bi bi-trash"></i>
                     </button>
                   </li>
@@ -60,8 +98,10 @@ export const App = (props) => {
                     event.preventDefault();
                     const newInput = [...input2];
                     newInput.push({
-                      id: newInput.length + 1,
+                      id: Math.random(),
+                      // id: newInput.length + 1,
                       text: input,
+                      isCompleted: false,
                     });
                     setInput2(newInput);
                     setInput("");
